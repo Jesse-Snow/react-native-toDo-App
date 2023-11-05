@@ -9,9 +9,19 @@ export default function App(){
   const [tasks,setTasks] = useState([]);
 
   function handleAddTarefa(){
-    setTasks([...tasks,tarefa]);
+    if(tarefa){
+      setTasks([...tasks,tarefa]);
+      setTarefa('');
+    }
 
-    setTarefa('');
+  }
+
+  function handleDeleteTask(taskDescription){
+    let allTasks = tasks;
+    const tasksNotIn = allTasks.filter( value => taskDescription != value);
+
+
+    setTasks(tasksNotIn);
   }
 
   return (
@@ -42,7 +52,11 @@ export default function App(){
         {tasks && 
           (
             tasks.map((value,index) => (
-              <Task key={index} description={value} />
+              <Task 
+                key={index} 
+                description={value} 
+                handleDeleteTask={() => handleDeleteTask(value)}
+              />
             ))
           )
         }

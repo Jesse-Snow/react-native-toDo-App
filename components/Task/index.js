@@ -1,10 +1,18 @@
-import { Text,View,StyleSheet} from 'react-native';
+import { useState } from 'react';
+import { Text,View,StyleSheet,TouchableWithoutFeedback} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather'; 
 
+
+
 export function Task( props ){
+
     return (
         <View style={styles.container}>
-            <Icon name='trash' size={30} />
+            <TouchableWithoutFeedback
+              onPress={props.handleDeleteTask}
+            >
+              <Icon name='trash' size={30} />
+            </TouchableWithoutFeedback>
             <Text style={styles.taskText}> 
               {props.description}
             </Text>
