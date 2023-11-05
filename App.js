@@ -1,28 +1,53 @@
+import { useState } from 'react';
 import { Text,StyleSheet,View,ScrollView,TextInput,TouchableNativeFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather'; 
 
 import { Task } from './components/Task';
 
 export default function App(){
+  const [tarefa,setTarefa] = useState('');
+  const [tasks,setTasks] = useState([]);
+
+  function handleAddTarefa(){
+    setTasks([...tasks,tarefa]);
+
+    setTarefa('');
+  }
+
   return (
     <View style={styles.container}>
+
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Tarefas</Text>
         <View style={styles.inputContainer}>
           <TextInput 
             style={styles.input}
             placeholder='Digite a tarefa aqui'
+            defaultValue={tarefa}
+            onChangeText={(text) => setTarefa(text)}
           />
-          <TouchableNativeFeedback style={styles.button}>
+          <TouchableNativeFeedback 
+            style={styles.button}
+            onPress={handleAddTarefa}  
+          >
             <Icon name='plus-square' size={45} color='white'/>
           </TouchableNativeFeedback>
         </View>
       </View>
-      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContentContainer}>
-        <Task description='Tomar Suco'/>
-        <Task description='Adicionar outra Tarefa'/>
-        <Task description='Remover alguma Task task'/>
+
+      <ScrollView 
+        style={styles.scrollContainer} 
+        contentContainerStyle={styles.scrollContentContainer}
+      >
+        {tasks && 
+          (
+            tasks.map((value,index) => (
+              <Task key={index} description={value} />
+            ))
+          )
+        }
       </ScrollView>
+
     </View>
   )
 }
