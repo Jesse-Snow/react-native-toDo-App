@@ -1,12 +1,23 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Text,StyleSheet,View,ScrollView,TextInput,TouchableNativeFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather'; 
 
 import { Task } from './components/Task';
 
+import { api } from './services/api';
+
 export default function App(){
   const [tarefa,setTarefa] = useState('');
   const [tasks,setTasks] = useState([]);
+
+  useEffect( ()=> {
+    async function getTasks(){
+      const response = await api.get('/task');
+      setTasks(response.data)
+    }
+    getTasks();
+    
+  })
 
   function handleAddTarefa(){
     if(tarefa){
@@ -51,11 +62,11 @@ export default function App(){
       >
         {tasks && 
           (
-            tasks.map((value,index) => (
+            tasks.map((value) => (
               <Task 
-                key={index} 
-                description={value} 
-                handleDeleteTask={() => handleDeleteTask(value)}
+                key={value.id} 
+                description={value.description} 
+                handleDeleteTask={() => handleDeleteTask(value.id)}
               />
             ))
           )
