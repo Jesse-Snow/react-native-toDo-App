@@ -1,5 +1,5 @@
 import { useState,useEffect } from 'react';
-import { Text,StyleSheet,View,ScrollView,TextInput,TouchableNativeFeedback } from 'react-native';
+import { Text,StyleSheet,View,ScrollView,TextInput,TouchableNativeFeedback,Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather'; 
 
 import { Task } from './components/Task';
@@ -9,30 +9,29 @@ import { api } from './services/api';
 export default function App(){
   const [tarefa,setTarefa] = useState('');
   const [tasks,setTasks] = useState([]);
+  
+  async function getTasks(){
+    const response = await api.get('/task');
+    setTasks(response.data)
+  }
 
   useEffect( ()=> {
-    async function getTasks(){
-      const response = await api.get('/task');
-      setTasks(response.data)
-    }
     getTasks();
-    
   })
 
-  function handleAddTarefa(){
+  async function handleAddTarefa(){
     if(tarefa){
-      setTasks([...tasks,tarefa]);
+      await api.post('/task', { description: tarefa} )
+      getTasks();
       setTarefa('');
+      Keyboard.dismiss();
     }
 
   }
 
-  function handleDeleteTask(taskDescription){
-    let allTasks = tasks;
-    const tasksNotIn = allTasks.filter( value => taskDescription != value);
-
-
-    setTasks(tasksNotIn);
+  async function handleDeleteTask(id){
+    await api.delete('/task',{ params: { id: id }})
+    getTasks();
   }
 
   return (
